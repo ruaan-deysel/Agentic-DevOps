@@ -1,0 +1,39 @@
+{
+    "name": "Nucleus",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "nucleus",
+    "workspaceFolder": "/workspaces/Azure-DevOps",
+    "remoteUser": "vscode",
+
+    // Set up VS Code settings and extensions
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-azureresourcegroups",
+                "ms-azuretools.vscode-bicep",
+                "msazurermtools.azurerm-vscode-tools",
+                "ms-vscode.azure-account",
+                "ms-vscode.powershell",
+                "ms-vscode.azurecli",
+                "redhat.vscode-yaml",
+                "github.vscode-github-actions",
+                "ms-azure-devops.azure-pipelines",
+                "timonwong.shellcheck",
+                "DavidAnson.vscode-markdownlint"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "pwsh",
+                "editor.formatOnSave": true,
+                "editor.formatOnType": true,
+                "files.trimTrailingWhitespace": true,
+                "files.insertFinalNewline": true
+            }
+        }
+    },
+
+    // Run post-create script
+    "postCreateCommand": "chmod +x ./.devcontainer/scripts/post-create.sh && ./.devcontainer/scripts/post-create.sh",
+
+    // For improved security, we'll use the non-root user
+    "updateRemoteUserUID": true
+}

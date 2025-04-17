@@ -1,0 +1,24 @@
+# Docker Compose file for Nucleus devcontainer
+services:
+  nucleus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Use a unique container name to avoid conflicts
+    container_name: nucleus-azure-devops
+    volumes:
+      - ../:/workspaces/Azure-DevOps:cached
+      # Use a named volume for vscode-server without external: true
+      - vscode-server:/home/vscode/.vscode-server
+    command: sleep infinity
+    # Add these settings to improve stability
+    init: true
+    user: vscode
+    # Overrides default command so things don't shut down after the process ends
+    tty: true
+    # Ensure proper environment variables
+    environment:
+      - TZ=UTC
+
+volumes:
+  vscode-server:

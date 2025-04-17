@@ -1,0 +1,103 @@
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  paths:
+    include:
+    - main.bicep
+    - config/ms.apim/*
+
+parameters:
+- name: environment
+  displayName: Environment to deploy to
+  type: string
+  default: dev
+  values:
+  - dev
+  - test
+  - prod
+- name: resourceGroupName
+  displayName: Resource Group Name
+  type: string
+  default: rg-nucleus-apim-${{ parameters.environment }}
+
+variables:
+  - name: parameterFilePath
+    value: 'config/ms.apim/parameters.${{ parameters.environment }}.bicepparam'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Validate
+  jobs:
+  - job: ValidateBicepTemplate
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Validate Bicep template'
+      inputs:
+        azureSubscription: 'azure-service-connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Building Bicep template..."
+          az bicep build --file main.bicep
+
+          echo "Validating Bicep template against resource group..."
+          az deployment group validate \
+            --resource-group ${{ parameters.resourceGroupName }} \
+            --template-file main.bicep \
+            --parameters @$(parameterFilePath)
+
+    - task: PowerShell@2
+      displayName: 'Run Bicep Tests'
+      inputs:
+        filePath: 'scripts/Test-BicepTemplates.ps1'
+        pwsh: true
+
+- stage: Deploy
+  dependsOn: Validate
+  jobs:
+  - job: DeployAPIManagement
+    steps:
+    - task: AzureCLI@2
+      displayName: 'What-If Deployment Analysis'
+      inputs:
+        azureSubscription: 'azure-service-connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Running what-if analysis..."
+          az deployment group what-if \
+            --resource-group ${{ parameters.resourceGroupName }} \
+            --template-file main.bicep \
+            --parameters @$(parameterFilePath)
+
+    - task: AzureCLI@2
+      displayName: 'Deploy API Management'
+      inputs:
+        azureSubscription: 'azure-service-connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Deploying API Management..."
+          az deployment group create \
+            --resource-group ${{ parameters.resourceGroupName }} \
+            --template-file main.bicep \
+            --parameters @$(parameterFilePath) \
+            --name "apim-deployment-$(Build.BuildNumber)"
+
+    - task: PowerShell@2
+      displayName: 'Run Post-Deployment Scripts'
+      inputs:
+        filePath: 'scripts/Post-DeploymentConfiguration.ps1'
+        arguments: '-ResourceGroup ${{ parameters.resourceGroupName }} -Environment ${{ parameters.environment }} -LogPath "$(Build.ArtifactStagingDirectory)/logs"'
+        pwsh: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Logs'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/logs'
+        ArtifactName: 'DeploymentLogs'
+        publishLocation: 'Container'

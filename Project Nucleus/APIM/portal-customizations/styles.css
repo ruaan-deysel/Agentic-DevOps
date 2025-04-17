@@ -1,0 +1,140 @@
+/* Custom styles for API Management Developer Portal */
+
+/* Primary colors */
+:root {
+    --theme-primary-color: #0078d4;
+    --theme-secondary-color: #2b88d8;
+    --theme-background-color: #f8f9fa;
+    --theme-text-color: #323130;
+    --theme-link-color: #0078d4;
+    --theme-link-hover-color: #106ebe;
+    --theme-button-background: #0078d4;
+    --theme-button-text: #ffffff;
+    --theme-button-hover-background: #106ebe;
+    --theme-header-background: #ffffff;
+    --theme-footer-background: #f3f2f1;
+}
+
+/* Global styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--theme-text-color);
+    background-color: var(--theme-background-color);
+}
+
+a {
+    color: var(--theme-link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--theme-link-hover-color);
+    text-decoration: underline;
+}
+
+/* Header styles */
+header {
+    background-color: var(--theme-header-background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation styles */
+nav.navigation {
+    font-weight: 500;
+}
+
+nav.navigation a {
+    color: var(--theme-text-color);
+}
+
+nav.navigation a:hover,
+nav.navigation a.active {
+    color: var(--theme-primary-color);
+}
+
+/* Button styles */
+button.button,
+a.button {
+    background-color: var(--theme-button-background);
+    color: var(--theme-button-text);
+    border-radius: 2px;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+button.button:hover,
+a.button:hover {
+    background-color: var(--theme-button-hover-background);
+}
+
+/* API list styles */
+.api-list-item {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.api-list-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Operation list styles */
+.operation-header {
+    border-radius: 4px 4px 0 0;
+}
+
+.operation-header.get {
+    background-color: #e8f4f9;
+}
+
+.operation-header.post {
+    background-color: #e3f1df;
+}
+
+.operation-header.put {
+    background-color: #f9f1d6;
+}
+
+.operation-header.delete {
+    background-color: #f9e1e1;
+}
+
+/* Footer styles */
+footer {
+    background-color: var(--theme-footer-background);
+    padding: 20px 0;
+    margin-top: 40px;
+}
+
+/* Documentation styles */
+.documentation h1,
+.documentation h2,
+.documentation h3,
+.documentation h4,
+.documentation h5,
+.documentation h6 {
+    color: var(--theme-primary-color);
+}
+
+.documentation code {
+    background-color: #f3f2f1;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.documentation pre {
+    background-color: #f3f2f1;
+    padding: 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .api-list-item {
+        margin-bottom: 16px;
+    }
+}

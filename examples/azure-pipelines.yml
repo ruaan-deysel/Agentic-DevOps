@@ -1,0 +1,63 @@
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - examples/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: resourceGroupName
+    value: 'rg-nucleus-example'
+  - name: location
+    value: 'eastus'
+
+stages:
+- stage: Validate
+  jobs:
+  - job: ValidateBicep
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Validate Bicep Template'
+      inputs:
+        azureSubscription: 'Azure Subscription'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az bicep build --file examples/storage-account.bicep
+          az deployment group validate \
+            --resource-group $(resourceGroupName) \
+            --template-file examples/storage-account.bicep \
+            --parameters storageAccountName=stnucleusexample
+
+- stage: Deploy
+  dependsOn: Validate
+  condition: succeeded()
+  jobs:
+  - job: DeployInfrastructure
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Create Resource Group if not exists'
+      inputs:
+        azureSubscription: 'Azure Subscription'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          if [ $(az group exists --name $(resourceGroupName)) = false ]; then
+            az group create --name $(resourceGroupName) --location $(location)
+          fi
+
+    - task: AzureCLI@2
+      displayName: 'Deploy Bicep Template'
+      inputs:
+        azureSubscription: 'Azure Subscription'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az deployment group create \
+            --resource-group $(resourceGroupName) \
+            --template-file examples/storage-account.bicep \
+            --parameters storageAccountName=stnucleusexample
