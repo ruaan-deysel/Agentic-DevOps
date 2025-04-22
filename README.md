@@ -130,11 +130,3 @@ When working with this devcontainer:
 5. Follow the principle of least privilege for service principals
 6. Run validation tests before deploying to production
 7. Use What-If operations to preview changes
-
-## Contributing
-
-Contributions to improve the devcontainer are welcome. Please feel free to submit a pull request or open an issue.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
