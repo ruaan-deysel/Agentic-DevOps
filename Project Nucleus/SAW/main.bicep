@@ -106,7 +106,6 @@ resource connection 'Microsoft.Network/connections@2023-09-01' = {
       id: expressRouteCircuit.outputs.resourceId
     }
     routingWeight: 0
-    authorizationKey: null
     enableBgp: false
     useLocalAzureIpAddress: false
     usePolicyBasedTrafficSelectors: false
