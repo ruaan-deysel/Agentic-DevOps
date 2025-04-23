@@ -53,6 +53,10 @@ try {
     $subscriptionInfo = az account show | ConvertFrom-Json
     Write-Host "Using subscription: $($subscriptionInfo.name) ($($subscriptionInfo.id))" -ForegroundColor Yellow
 
+    # Install the Bicep registry module
+    Write-Host "Installing Azure Verified Module for ExpressRoute Circuit..." -ForegroundColor Yellow
+    az bicep install-module --target-module-name avm/res/network/express-route-circuit --version 0.3.0
+
     # Deploy the ExpressRoute circuit
     if ($WhatIf) {
         Write-Host "Performing what-if deployment..." -ForegroundColor Yellow

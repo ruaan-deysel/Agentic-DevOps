@@ -1,10 +1,10 @@
 # SAW ExpressRoute Circuit Deployment
 
-This project contains Bicep templates for deploying and configuring ExpressRoute circuits for the SAW environment.
+This project contains Bicep templates for deploying and configuring ExpressRoute circuits for the SAW environment using Azure Verified Modules (AVM).
 
 ## Overview
 
-The SAW ExpressRoute project provides a standardized approach to deploying and managing ExpressRoute circuits across different environments. It uses Bicep templates to ensure best practices and consistency.
+The SAW ExpressRoute project provides a standardized approach to deploying and managing ExpressRoute circuits across different environments. It uses Azure Verified Modules (AVM) and Bicep templates to ensure best practices and consistency.
 
 ## Project Structure
 
@@ -29,6 +29,7 @@ SAW/
 - Deployment of ExpressRoute circuits with specified bandwidth, SKU, and peering location
 - Connection to existing virtual network gateways
 - Standardized tagging for resource management
+- Uses Azure Verified Modules (AVM) for consistent, best-practice deployments
 
 ## Getting Started
 

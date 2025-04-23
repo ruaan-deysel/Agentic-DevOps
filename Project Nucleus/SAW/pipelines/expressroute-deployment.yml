@@ -99,6 +99,10 @@ stages:
                       SUBSCRIPTION_NAME=$(az account show --query name -o tsv)
                       echo "Using subscription: $SUBSCRIPTION_NAME ($SUBSCRIPTION_ID)"
 
+                      # Install the Bicep registry module
+                      echo "Installing Azure Verified Module for ExpressRoute Circuit"
+                      az bicep install-module --target-module-name avm/res/network/express-route-circuit --version 0.3.0
+
                       # Deploy or perform what-if based on parameter
                       if [ "${{ parameters.whatIf }}" = "true" ]; then
                         echo "Performing what-if deployment (no changes will be made)"

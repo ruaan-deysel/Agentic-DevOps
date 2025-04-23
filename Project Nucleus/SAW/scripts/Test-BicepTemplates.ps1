@@ -80,6 +80,10 @@ Write-Host "Verifying subscription context..." -ForegroundColor Yellow
 $subscriptionInfo = az account show | ConvertFrom-Json
 Write-Host "Using subscription: $($subscriptionInfo.name) ($($subscriptionInfo.id))" -ForegroundColor Yellow
 
+# Install the Bicep registry module
+Write-Host "Installing Azure Verified Module for ExpressRoute Circuit..." -ForegroundColor Yellow
+az bicep install-module --target-module-name avm/res/network/express-route-circuit --version 0.3.0
+
 # Perform a what-if deployment to validate the template with parameters
 Write-Host "Performing what-if deployment to validate template with parameters..." -ForegroundColor Yellow
 Write-Host "Note: This will not create any resources, it's just a validation" -ForegroundColor Yellow

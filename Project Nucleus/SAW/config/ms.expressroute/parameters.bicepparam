@@ -36,6 +36,3 @@ param tags = {
   ResourceGroup: 'SAW-AE-PLT-CON-NET-RG001'
   CreatedBy: 'DXC'
 }
-
-// The deployment timestamp will be automatically set by the Bicep template
-// param deploymentTimestamp = '2024-07-25' // Uncomment and set if you want to override the default
