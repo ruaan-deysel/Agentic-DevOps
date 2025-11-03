@@ -5,7 +5,12 @@ description: "Security Best Practices for Bicep and Terraform"
 
 # IaC Security Best Practices
 
+## Agentic DevOps Context
+
+This repository follows **Agentic DevOps** principles. AI agents can assist with security reviews, but all security findings must be validated by humans. See `.augment/rules/agentic-devops-patterns.md` for AI-assisted security review patterns.
+
 ## Security Principles
+
 - Never hardcode secrets in code
 - Use Azure Key Vault for secret management
 - Implement least privilege access
@@ -14,10 +19,12 @@ description: "Security Best Practices for Bicep and Terraform"
 - Scan code for security vulnerabilities
 - Use pre-commit hooks to prevent security issues
 - Scan for secrets before EVERY commit
+- **Use AI to identify security issues**, but validate all findings
 
 ## Secret Management
 
 ### NEVER Do This
+
 ```
 # ❌ WRONG - Hardcoded secrets
 param adminPassword = 'MyPassword123!'
@@ -27,6 +34,7 @@ variable "admin_password" { default = "MyPassword123!" }
 ### Correct Approaches
 
 **Bicep:**
+
 ```bicep
 @secure()
 param adminPassword string
@@ -36,6 +44,7 @@ param adminPassword = getSecret('sub-id', 'rg', 'kv', 'secret-name')
 ```
 
 **Terraform:**
+
 ```hcl
 variable "admin_password" {
   type      = string
@@ -52,7 +61,9 @@ data "azurerm_key_vault_secret" "admin_password" {
 ## Resource Security Defaults
 
 ### Storage Account
+
 **Bicep:**
+
 ```bicep
 resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
@@ -69,6 +80,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 ```
 
 **Terraform:**
+
 ```hcl
 resource "azurerm_storage_account" "example" {
   allow_nested_items_to_be_public = false
@@ -82,7 +94,9 @@ resource "azurerm_storage_account" "example" {
 ```
 
 ### Key Vault
+
 **Bicep:**
+
 ```bicep
 resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
   properties: {
@@ -98,6 +112,7 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
 ```
 
 **Terraform:**
+
 ```hcl
 resource "azurerm_key_vault" "example" {
   enable_rbac_authorization  = true
@@ -111,12 +126,14 @@ resource "azurerm_key_vault" "example" {
 ```
 
 ## Network Security
+
 - Default deny for network access
 - Use Private Endpoints for PaaS services
 - Implement Network Security Groups
 - Use Azure Firewall for egress filtering
 
 ## Authentication
+
 - Use Managed Identity for Azure authentication
 - Avoid Service Principal credentials in code
 - Use Azure CLI auth for local development
@@ -127,6 +144,7 @@ resource "azurerm_key_vault" "example" {
 ### Secret Detection (MANDATORY Before Every Commit)
 
 **Gitleaks** - Scan for secrets and credentials:
+
 ```bash
 # Scan entire repository for secrets
 gitleaks detect --source . --verbose
@@ -143,6 +161,7 @@ gitleaks detect --source . --report-path gitleaks-report.json
 ```
 
 **When to run:**
+
 - Before EVERY commit (automated via pre-commit hooks)
 - Before creating pull requests
 - As part of CI/CD pipeline
@@ -150,6 +169,7 @@ gitleaks detect --source . --report-path gitleaks-report.json
 - After cloning repository
 
 **Common secrets detected:**
+
 - Azure connection strings
 - Storage account keys
 - Service principal credentials
@@ -160,6 +180,7 @@ gitleaks detect --source . --report-path gitleaks-report.json
 ### Pre-Commit Hooks (MANDATORY)
 
 **Setup:**
+
 ```bash
 # Install pre-commit framework
 pip install pre-commit
@@ -172,6 +193,7 @@ pre-commit run --all-files
 ```
 
 **Example .pre-commit-config.yaml:**
+
 ```yaml
 repos:
   - repo: https://github.com/gitleaks/gitleaks
@@ -195,6 +217,7 @@ repos:
 ```
 
 **Benefits:**
+
 - Prevents committing secrets
 - Enforces code formatting
 - Validates syntax before commit
@@ -204,6 +227,7 @@ repos:
 ### IaC Security Scanning Tools
 
 **Bicep:**
+
 ```bash
 # ARM-TTK
 Test-AzTemplate -TemplatePath ./bicep
@@ -219,6 +243,7 @@ checkov -d ./bicep
 ```
 
 **Terraform:**
+
 ```bash
 # Trivy (includes tfsec functionality)
 trivy config .
@@ -228,6 +253,7 @@ checkov -d .
 ```
 
 **Kubernetes:**
+
 ```bash
 # Trivy
 trivy config k8s/
@@ -237,6 +263,7 @@ checkov -d k8s/
 ```
 
 **When to run:**
+
 - After writing/modifying IaC code
 - Before committing changes
 - As part of CI/CD pipeline
@@ -245,6 +272,7 @@ checkov -d k8s/
 ## Systematic Task-Based Workflow (MANDATORY)
 
 ### Security Implementation Tasks
+
 1. **Planning:**
    - Identify all sensitive data
    - Plan Key Vault integration
@@ -261,12 +289,14 @@ checkov -d k8s/
    - Task 8: Document security controls
 
 ### Implementation
+
 - Mark task IN_PROGRESS
 - Implement ONE security control at a time
 - Test security configuration
 - Mark COMPLETE after verification
 
 ### Quality Gates
+
 - ✅ No hardcoded secrets
 - ✅ All sensitive parameters marked
 - ✅ Key Vault integration configured
@@ -276,6 +306,7 @@ checkov -d k8s/
 - ✅ RBAC configured
 
 ### Enforcement
+
 - Task-based workflow MANDATORY
 - Security scanning must be in task list
 - No deployments without security scan tasks completed

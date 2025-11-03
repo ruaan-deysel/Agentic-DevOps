@@ -1,4 +1,20 @@
-# Infrastructure-as-Code Guidelines for GitHub Copilot
+# Agentic DevOps - GitHub Copilot Instructions
+
+## 🤖 Agentic DevOps Context
+
+This repository follows **Agentic DevOps** principles - an AI-assisted approach to infrastructure as code development that combines traditional DevOps practices with AI-powered assistance from GitHub Copilot, Claude, and Augment Code.
+
+**Your Role as GitHub Copilot**:
+
+- **Real-time code completion** for Bicep, Terraform, Ansible, PowerShell, YAML
+- **Pattern recognition** from existing codebase to suggest consistent implementations
+- **Test generation** for infrastructure code validation
+- **Documentation generation** with inline comments and README updates
+- **Security-aware suggestions** following Azure best practices
+
+**Key Principle**: You are an **assistant**, not a replacement. All generated code must be reviewed, validated, and tested by humans before deployment.
+
+---
 
 ## 🚨 MANDATORY: Systematic Task-Based Development Workflow
 
@@ -1081,6 +1097,192 @@ targetScope = 'resourceGroup'
 @maxLength(24)
 param name string
 ```
+
+---
+
+## 🤖 Agentic DevOps Prompt Templates
+
+### Effective Prompt Structure for IaC
+
+When generating infrastructure code, use this template:
+
+```
+[CONTEXT] Describe the infrastructure component and its purpose
+[REQUIREMENTS] List specific technical requirements
+[CONSTRAINTS] Specify limitations, compliance needs, naming conventions
+[OUTPUT FORMAT] Specify desired code format (Bicep, Terraform, etc.)
+[STANDARDS] Reference applicable standards (AVM, organizational policies)
+```
+
+### Bicep Module Generation Prompts
+
+**Storage Account Module**:
+
+```
+Create a Bicep module for Azure Storage Account with:
+- Purpose: Application data storage for [WORKLOAD]
+- Required parameters: name, location, environment
+- Security: private endpoints, customer-managed keys, deny public access
+- Networking: allow Azure services only
+- Diagnostic settings: send to Log Analytics workspace
+- RBAC: Blob Data Contributor for managed identity
+- Naming convention: st-{workload}-{env}-{region}-{instance}
+- Follow Azure Verified Modules structure
+```
+
+**Virtual Network Module**:
+
+```
+Create a Bicep module for Azure Virtual Network with:
+- Purpose: Hub network for [WORKLOAD]
+- Subnets: GatewaySubnet, AzureFirewallSubnet, PrivateEndpointSubnet
+- Address space: 10.0.0.0/16
+- DNS: Azure-provided DNS
+- DDoS protection: Standard tier
+- Diagnostic settings: NSG flow logs to Log Analytics
+- Follow naming convention: vnet-{workload}-{env}-{region}-{instance}
+```
+
+### Terraform Module Generation Prompts
+
+**Resource Group Module**:
+
+```
+Create a Terraform module for Azure Resource Group with:
+- Provider: azurerm version 4.0+
+- Required variables: name, location, environment, tags
+- Validation: name must follow pattern rg-{workload}-{env}-{region}
+- Outputs: resource_group_id, resource_group_name, location
+- Include lifecycle block to prevent accidental deletion
+```
+
+**AKS Cluster Module**:
+
+```
+Create a Terraform module for Azure Kubernetes Service with:
+- Provider: azurerm version 4.0+
+- Required variables: cluster_name, location, node_count, vm_size
+- Security: managed identity, Azure CNI, Azure Policy, private cluster
+- Networking: integrate with existing VNet
+- Monitoring: enable Container Insights
+- Outputs: cluster_id, kube_config, identity_principal_id
+- Follow HashiCorp module structure
+```
+
+### Test Generation Prompts
+
+**Bicep Module Tests**:
+
+```
+Generate Pester tests for [MODULE_NAME] Bicep module:
+- Parameter validation tests (required params, min/max length, allowed values)
+- Security tests (verify private endpoints, encryption, network rules)
+- Compliance tests (naming convention, required tags, allowed locations)
+- Integration tests (deploy to test environment, verify resources created)
+- Use Pester 5.x syntax
+```
+
+**Terraform Module Tests**:
+
+```
+Generate Terraform tests for [MODULE_NAME] module:
+- Unit tests for variable validation
+- Integration tests for resource creation
+- Security tests for compliance (CIS Azure Benchmark)
+- Use Terraform test framework (terraform test)
+- Include setup and teardown steps
+```
+
+### Security Review Prompts
+
+**Infrastructure Code Security Scan**:
+
+```
+Review this [Bicep/Terraform] code for security issues:
+[PASTE CODE]
+
+Check for:
+- Hardcoded secrets or credentials
+- Missing encryption (at rest and in transit)
+- Public network access enabled
+- Overly permissive RBAC assignments
+- Missing diagnostic settings
+- Non-compliant resource configurations (CIS Azure Benchmark)
+- Deprecated or insecure resource properties
+
+Provide:
+- Specific line numbers for each issue
+- Severity rating (Critical, High, Medium, Low)
+- Remediation code snippets
+- Explanation of security impact
+```
+
+### Documentation Generation Prompts
+
+**Module README**:
+
+```
+Generate a README.md for this [Bicep/Terraform] module:
+- Module purpose and description
+- Prerequisites and dependencies
+- Parameters/variables table with descriptions
+- Outputs table with descriptions
+- Usage examples for dev, test, prod environments
+- Deployment instructions
+- Testing instructions
+- Security considerations
+- Compliance notes
+```
+
+### CI/CD Pipeline Generation Prompts
+
+**Azure Pipelines for Bicep**:
+
+```
+Generate an Azure Pipeline YAML for Bicep deployment with:
+- Trigger: main branch changes to /bicep/**
+- Stages: Validate, Plan, Deploy
+- Validate stage: bicep lint, bicep build, what-if
+- Plan stage: generate deployment plan, require manual approval
+- Deploy stage: deploy to dev, test, prod (sequential with approvals)
+- Security: run Trivy and Checkov scans, fail on high/critical
+- Notifications: Teams webhook on failure
+- Use Azure DevOps service connection for authentication
+```
+
+**GitHub Actions for Terraform**:
+
+```
+Generate a GitHub Actions workflow for Terraform deployment with:
+- Trigger: pull request and push to main for /terraform/**
+- Jobs: format, validate, plan, apply
+- Format job: terraform fmt -check
+- Validate job: terraform validate, tflint, trivy, checkov
+- Plan job: terraform plan, post plan as PR comment
+- Apply job: terraform apply (only on main branch, requires approval)
+- Use OIDC authentication to Azure
+- Store state in Azure Storage with state locking
+```
+
+### Best Practices for Copilot Interactions
+
+**DO** ✅:
+
+- Provide complete context (purpose, requirements, constraints)
+- Reference existing patterns in the codebase
+- Specify security requirements explicitly
+- Request validation and testing code
+- Ask for inline documentation
+- Iterate and refine suggestions
+
+**DON'T** ❌:
+
+- Accept suggestions without understanding them
+- Skip security and compliance checks
+- Ignore linting and validation errors
+- Use deprecated resource types or properties
+- Hardcode secrets or sensitive values
+- Deploy without testing in non-production environment
 
 ---
 

@@ -1,36 +1,271 @@
 {
+  // ==============================================================================
+  // GENERAL EDITOR SETTINGS
+  // ==============================================================================
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
+  "editor.insertSpaces": true,
+  "editor.rulers": [120],
+  "editor.wordWrap": "off",
+  "editor.linkedEditing": true,
+  "editor.suggestSelection": "first",
+
+  // ==============================================================================
+  // EDITOR VISUAL ENHANCEMENTS
+  // ==============================================================================
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.guides.indentation": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.minimap.enabled": true,
+  "editor.minimap.maxColumn": 120,
+  "editor.cursorBlinking": "smooth",
+  "editor.smoothScrolling": true,
+
+  // ==============================================================================
+  // FILE SETTINGS
+  // ==============================================================================
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.associations": {
+    "*.bicep": "bicep",
+    "*.bicepparam": "bicep",
+    "*.ps1": "powershell",
+    "*.psm1": "powershell",
+    "*.psd1": "powershell",
+    "azure-pipelines.yml": "azure-pipelines",
+    "azure-pipelines.yaml": "azure-pipelines",
+    "*.yaml": "yaml",
+    "*.yml": "yaml",
+    "*.tf": "terraform",
+    "*.tfvars": "terraform-vars",
+    "*.hcl": "terraform",
+    "Dockerfile*": "dockerfile",
+    ".env*": "properties",
+    "*.sh": "shellscript"
+  },
+  "files.exclude": {
+    "**/.terraform": true,
+    "**/.terraform.lock.hcl": false,
+    "**/terraform.tfstate": true,
+    "**/terraform.tfstate.backup": true,
+    "**/.bicep": true,
+    "**/node_modules": true
+  },
+
+  // ==============================================================================
+  // BICEP SETTINGS
+  // ==============================================================================
+  "[bicep]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-bicep",
     "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "files.trimTrailingWhitespace": true,
-    "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true,
-    "editor.rulers": [120],
+    "editor.tabSize": 2
+  },
+
+  // ==============================================================================
+  // TERRAFORM SETTINGS
+  // ==============================================================================
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true,
     "editor.tabSize": 2,
-    "editor.detectIndentation": true,
-    "editor.insertSpaces": true,
-    "files.associations": {
-        "*.bicep": "bicep",
-        "*.ps1": "powershell",
-        "azure-pipelines.yml": "azure-pipelines",
-        "*.yaml": "yaml",
-        "*.yml": "yaml"
-    },
-    "[bicep]": {
-        "editor.defaultFormatter": "ms-azuretools.vscode-bicep",
-        "editor.formatOnSave": true,
-        "editor.tabSize": 2
-    },
-    "[powershell]": {
-        "editor.defaultFormatter": "ms-vscode.powershell",
-        "editor.formatOnSave": true,
-        "editor.tabSize": 4
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml",
-        "editor.formatOnSave": true,
-        "editor.tabSize": 2
-    },
-    "powershell.codeFormatting.preset": "OTBS",
-    "powershell.scriptAnalysis.enable": true,
-    "powershell.integratedConsole.focusConsoleOnExecute": false
+    "editor.insertSpaces": true
+  },
+  "[terraform-vars]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "terraform.languageServer.enable": true,
+  "terraform.experimentalFeatures.validateOnSave": true,
+  "terraform.experimentalFeatures.prefillRequiredFields": true,
+  "terraform.codelens.referenceCount": true,
+
+  // ==============================================================================
+  // YAML SETTINGS
+  // ==============================================================================
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json": [
+      "azure-pipelines.yml",
+      "azure-pipelines.yaml",
+      ".azure-pipelines/*.yml",
+      ".azure-pipelines/*.yaml"
+    ],
+    "https://json.schemastore.org/github-workflow.json": [".github/workflows/*.yml", ".github/workflows/*.yaml"],
+    "kubernetes": ["k8s/*.yaml", "k8s/*.yml", "kubernetes/*.yaml", "kubernetes/*.yml"]
+  },
+  "yaml.customTags": [
+    "!And",
+    "!If",
+    "!Not",
+    "!Equals",
+    "!Or",
+    "!FindInMap",
+    "!Base64",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!Select",
+    "!Split",
+    "!Join sequence"
+  ],
+  "yaml.format.enable": true,
+  "yaml.validate": true,
+  "yaml.completion": true,
+
+  // ==============================================================================
+  // ANSIBLE SETTINGS
+  // ==============================================================================
+  "[ansible]": {
+    "editor.defaultFormatter": "redhat.ansible",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "ansible.validation.enabled": true,
+  "ansible.validation.lint.enabled": true,
+  "ansible.validation.lint.path": "ansible-lint",
+  "ansible.python.interpreterPath": "/usr/bin/python3",
+
+  // ==============================================================================
+  // POWERSHELL SETTINGS
+  // ==============================================================================
+  "[powershell]": {
+    "editor.defaultFormatter": "ms-vscode.powershell",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "powershell.codeFormatting.preset": "OTBS",
+  "powershell.scriptAnalysis.enable": true,
+  "powershell.integratedConsole.focusConsoleOnExecute": false,
+
+  // ==============================================================================
+  // JSON SETTINGS
+  // ==============================================================================
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
+  // ==============================================================================
+  // MARKDOWN SETTINGS
+  // ==============================================================================
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+  "markdownlint.config": {
+    "MD013": false,
+    "MD033": false,
+    "MD041": false
+  },
+
+  // ==============================================================================
+  // SHELL SCRIPT SETTINGS
+  // ==============================================================================
+  "[shellscript]": {
+    "editor.formatOnSave": false,
+    "editor.tabSize": 2
+  },
+  "shellcheck.enable": true,
+  "shellcheck.run": "onSave",
+  "shellcheck.exclude": ["SC2086", "SC2181"],
+  "shellcheck.customArgs": ["-x"],
+
+  // ==============================================================================
+  // PRETTIER SETTINGS
+  // ==============================================================================
+  "prettier.singleQuote": false,
+  "prettier.trailingComma": "es5",
+  "prettier.tabWidth": 2,
+  "prettier.semi": true,
+  "prettier.printWidth": 120,
+  "prettier.endOfLine": "lf",
+
+  // ==============================================================================
+  // GIT SETTINGS
+  // ==============================================================================
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.postCommitCommand": "none",
+  "git.ignoreLimitWarning": true,
+
+  // ==============================================================================
+  // SEARCH AND PERFORMANCE
+  // ==============================================================================
+  "search.exclude": {
+    "**/.terraform": true,
+    "**/.bicep": true,
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/*.tfstate": true,
+    "**/*.tfstate.backup": true
+  },
+  "files.watcherExclude": {
+    "**/.terraform/**": true,
+    "**/.bicep/**": true,
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true
+  },
+
+  // ==============================================================================
+  // WORKBENCH SETTINGS
+  // ==============================================================================
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.labelFormat": "short",
+
+  // ==============================================================================
+  // TERMINAL SETTINGS
+  // ==============================================================================
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "line",
+
+  // ==============================================================================
+  // GITHUB COPILOT SETTINGS (AGENTIC DEVOPS)
+  // ==============================================================================
+  "github.copilot.enable": {
+    "*": false
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.advanced": {
+    "debug.overrideEngine": "gpt-4",
+    "debug.testOverrideProxyUrl": "",
+    "debug.overrideProxyUrl": ""
+  },
+  // Copilot suggestions for IaC files
+  "github.copilot.inlineSuggest.enable": true,
+  // Enable Copilot chat for infrastructure questions
+  "github.copilot.chat.enabled": true,
+  // Copilot should respect workspace patterns
+  "github.copilot.chat.useProjectTemplates": true
 }
