@@ -1,10 +1,10 @@
-# Nucleus - Azure Infrastructure as Code Development Container
+# Azure DevOps - Azure Infrastructure as Code Development Container
 
 This repository contains a lightweight development container (devcontainer) specifically designed for Azure Infrastructure as Code (IaC) development using Bicep, ARM templates, PowerShell, and Azure DevOps/GitHub pipelines. The container is designed to work seamlessly on both macOS and Windows via Docker Desktop.
 
 ## Features
 
-The Nucleus devcontainer includes the following tools and features:
+The Azure DevOps devcontainer includes the following tools and features:
 
 ### Core Tools
 
@@ -57,7 +57,7 @@ The Nucleus devcontainer includes the following tools and features:
 
 ### How It Works
 
-Nucleus uses Microsoft's Dev Container Features to simplify setup:
+Azure DevOps uses Microsoft's Dev Container Features to simplify setup:
 
 - **Base Image**: Uses `mcr.microsoft.com/devcontainers/base:ubuntu` which runs on both macOS and Windows
 - **Azure CLI Feature**: Installs Azure CLI and Bicep CLI with `installBicep: true`
