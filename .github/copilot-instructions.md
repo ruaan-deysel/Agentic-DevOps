@@ -1,8 +1,55 @@
-# Bicep Infrastructure-as-Code Guidelines for GitHub Copilot
+# Infrastructure-as-Code Guidelines for GitHub Copilot
+
+## 🚨 MANDATORY: Systematic Task-Based Development Workflow
+
+**ALL development work MUST follow a systematic task-based workflow:**
+
+### Before Starting ANY Work
+
+1. **Create Granular Tasks**:
+
+   - Break down work into small, testable units (30-60 min each)
+   - Each task = single, verifiable piece of work
+   - Document task dependencies and sequence
+   - Include testing tasks for each code task
+
+2. **Task Management Rules**:
+   - Work through tasks ONE AT A TIME
+   - Mark task as IN_PROGRESS before starting
+   - Focus ONLY on current task
+   - Test thoroughly after each task
+   - Mark COMPLETE only after verification passes
+   - NEVER batch multiple tasks before marking complete
+   - NEVER skip ahead to next task
+
+### Example Task Breakdown
+
+For new storage account deployment:
+
+1. Create module/wrapper structure
+2. Add parameter validation
+3. Configure security settings
+4. Run lint/fmt (TESTING TASK)
+5. Run validate (TESTING TASK)
+6. Create parameter file for dev
+7. Run plan and review (TESTING TASK)
+8. Deploy to dev
+9. Verify deployment (TESTING TASK)
+10. Update documentation
+
+### Enforcement
+
+- Task-based workflow is NON-NEGOTIABLE
+- Code reviews verify task management was used
+- PRs must reference completed tasks
+- No deployments without documented task completion
+
+---
 
 ## 🎯 Critical Rules (ALWAYS Follow)
 
 ### 1. ALWAYS Use Azure Verified Modules (AVM)
+
 ```bicep
 // ✅ CORRECT - Use AVM with specific version
 module storageAccount 'br/public:avm/res/storage/storage-account:0.9.0' = {
@@ -22,6 +69,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 ```
 
 ### 2. ALWAYS Use Configuration-Driven Approach
+
 ```bicep
 // ✅ CORRECT - Parameters from .bicepparam file
 @description('Storage account name')
@@ -40,6 +88,7 @@ var location = 'eastus'
 ```
 
 ### 3. ALWAYS Follow Naming Conventions
+
 ```bicep
 // Pattern: {resource-type}-{workload}-{environment}-{region}-{instance}
 
@@ -63,6 +112,7 @@ var storageAccountName = 'mystorage'
 ## 📋 Standard Patterns
 
 ### Storage Account Pattern
+
 ```bicep
 @description('Workload name')
 param workloadName string
@@ -102,6 +152,7 @@ output storageAccountName string = storageAccount.outputs.name
 ```
 
 ### Virtual Network Pattern
+
 ```bicep
 @description('Workload name')
 param workloadName string
@@ -145,6 +196,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.0' = {
 ```
 
 ### Key Vault Pattern
+
 ```bicep
 @description('Workload name')
 param workloadName string
@@ -185,6 +237,7 @@ output keyVaultUri string = keyVault.outputs.uri
 ```
 
 ### AKS Cluster Pattern
+
 ```bicep
 @description('Cluster name')
 param clusterName string
@@ -401,28 +454,28 @@ param tags object = {}
 
 ## 🎨 Resource Naming Reference
 
-| Resource Type | Prefix | Example |
-|--------------|--------|---------|
-| Virtual Machine | `vm` | `vm-webapp-prod-eus-001` |
-| Virtual Network | `vnet` | `vnet-hub-prod-eus-001` |
-| Subnet | `snet` | `snet-app-prod-eus-001` |
-| Network Security Group | `nsg` | `nsg-webapp-prod-eus-001` |
-| Storage Account | `st` | `stwebappprodeus001` |
-| Key Vault | `kv` | `kv-webapp-prod-eus-001` |
-| App Service | `app` | `app-webapp-prod-eus-001` |
-| Function App | `func` | `func-webapp-prod-eus-001` |
-| AKS Cluster | `aks` | `aks-webapp-prod-eus-001` |
-| SQL Server | `sql` | `sql-webapp-prod-eus-001` |
-| SQL Database | `sqldb` | `sqldb-webapp-prod-eus-001` |
-| Cosmos DB | `cosmos` | `cosmos-webapp-prod-eus-001` |
-| Redis Cache | `redis` | `redis-webapp-prod-eus-001` |
-| Log Analytics | `log` | `log-prod-eus-001` |
-| Application Insights | `appi` | `appi-webapp-prod-eus-001` |
-| Container Registry | `acr` | `acrwebappprodeus001` |
-| Public IP | `pip` | `pip-webapp-prod-eus-001` |
-| Load Balancer | `lb` | `lb-webapp-prod-eus-001` |
-| Application Gateway | `appgw` | `appgw-webapp-prod-eus-001` |
-| Azure Firewall | `fw` | `fw-hub-prod-eus-001` |
+| Resource Type          | Prefix   | Example                      |
+| ---------------------- | -------- | ---------------------------- |
+| Virtual Machine        | `vm`     | `vm-webapp-prod-eus-001`     |
+| Virtual Network        | `vnet`   | `vnet-hub-prod-eus-001`      |
+| Subnet                 | `snet`   | `snet-app-prod-eus-001`      |
+| Network Security Group | `nsg`    | `nsg-webapp-prod-eus-001`    |
+| Storage Account        | `st`     | `stwebappprodeus001`         |
+| Key Vault              | `kv`     | `kv-webapp-prod-eus-001`     |
+| App Service            | `app`    | `app-webapp-prod-eus-001`    |
+| Function App           | `func`   | `func-webapp-prod-eus-001`   |
+| AKS Cluster            | `aks`    | `aks-webapp-prod-eus-001`    |
+| SQL Server             | `sql`    | `sql-webapp-prod-eus-001`    |
+| SQL Database           | `sqldb`  | `sqldb-webapp-prod-eus-001`  |
+| Cosmos DB              | `cosmos` | `cosmos-webapp-prod-eus-001` |
+| Redis Cache            | `redis`  | `redis-webapp-prod-eus-001`  |
+| Log Analytics          | `log`    | `log-prod-eus-001`           |
+| Application Insights   | `appi`   | `appi-webapp-prod-eus-001`   |
+| Container Registry     | `acr`    | `acrwebappprodeus001`        |
+| Public IP              | `pip`    | `pip-webapp-prod-eus-001`    |
+| Load Balancer          | `lb`     | `lb-webapp-prod-eus-001`     |
+| Application Gateway    | `appgw`  | `appgw-webapp-prod-eus-001`  |
+| Azure Firewall         | `fw`     | `fw-hub-prod-eus-001`        |
 
 ---
 
@@ -581,32 +634,32 @@ module keyVault '../modules/key-vault-wrapper.bicep' = {
 
 ## 📚 Environment Abbreviations
 
-| Environment | Abbreviation |
-|------------|--------------|
-| Development | `dev` |
-| Test | `tst` |
-| Staging | `stg` |
-| Production | `prod` |
-| Sandbox | `sbx` |
-| Quality Assurance | `qa` |
+| Environment       | Abbreviation |
+| ----------------- | ------------ |
+| Development       | `dev`        |
+| Test              | `tst`        |
+| Staging           | `stg`        |
+| Production        | `prod`       |
+| Sandbox           | `sbx`        |
+| Quality Assurance | `qa`         |
 
 ## 🌍 Location Abbreviations
 
-| Region | Abbreviation |
-|--------|--------------|
-| East US | `eus` |
-| West US | `wus` |
-| East US 2 | `eus2` |
-| West US 2 | `wus2` |
-| Central US | `cus` |
-| North Europe | `neu` |
-| West Europe | `weu` |
-| Southeast Asia | `sea` |
-| East Asia | `easia` |
-| UK South | `uks` |
-| UK West | `ukw` |
-| Australia East | `aue` |
-| Australia Southeast | `ause` |
+| Region              | Abbreviation |
+| ------------------- | ------------ |
+| East US             | `eus`        |
+| West US             | `wus`        |
+| East US 2           | `eus2`       |
+| West US 2           | `wus2`       |
+| Central US          | `cus`        |
+| North Europe        | `neu`        |
+| West Europe         | `weu`        |
+| Southeast Asia      | `sea`        |
+| East Asia           | `easia`      |
+| UK South            | `uks`        |
+| UK West             | `ukw`        |
+| Australia East      | `aue`        |
+| Australia Southeast | `ause`       |
 
 ---
 
@@ -618,14 +671,14 @@ module keyVault '../modules/key-vault-wrapper.bicep' = {
   Purpose: Wrapper module for Azure Storage Account using AVM
   Author: [Team Name]
   Created: [Date]
-  
+
   Description:
   This module wraps the AVM Storage Account module with organization-specific
   defaults and security settings.
-  
+
   Dependencies:
   - Azure Verified Module: storage/storage-account:0.9.0
-  
+
   Usage:
   See parameters/storage-account.{env}.bicepparam for configuration examples
 */
@@ -656,4 +709,4 @@ param name string
 
 ---
 
-*Follow these patterns for consistent, secure, production-ready Bicep infrastructure code.*
+_Follow these patterns for consistent, secure, production-ready Bicep infrastructure code._
