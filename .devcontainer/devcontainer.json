@@ -12,12 +12,15 @@
                 // Azure Extensions
                 "ms-azuretools.vscode-azureresourcegroups",
                 "ms-azuretools.vscode-bicep",
-                "msazurermtools.azurerm-vscode-tools",
-                "ms-vscode.azure-account",
                 "ms-vscode.azurecli",
+                "ms-azuretools.vscode-azure-mcp-server",
+                // Removed deprecated extensions:
+                // - "msazurermtools.azurerm-vscode-tools" (Azure Resource Manager Tools - deprecated)
+                // - "ms-vscode.azure-account" (Azure Account - deprecated)
 
                 // IaC Extensions
                 "hashicorp.terraform",
+                "ms-azuretools.vscode-azureterraform",
                 "redhat.ansible",
 
                 // Kubernetes Extensions
@@ -33,7 +36,11 @@
 
                 // Code Quality Extensions
                 "timonwong.shellcheck",
-                "DavidAnson.vscode-markdownlint"
+                "DavidAnson.vscode-markdownlint",
+
+                // Code Formatting Extensions
+                "esbenp.prettier-vscode",
+                "oderwat.indent-rainbow"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "pwsh",
