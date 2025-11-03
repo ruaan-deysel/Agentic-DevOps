@@ -94,3 +94,19 @@ For new storage account:
 - PRs must reference completed tasks
 - No deployments without task completion
 
+## Documentation Standards
+
+**IMPORTANT:** Do NOT create unsolicited documentation files.
+
+See `documentation-standards.md` for complete guidelines on:
+- Prohibited documentation files (summary, validation, reference files)
+- When documentation creation is appropriate
+- Best practices for maintaining clean repository structure
+
+**Key Rules:**
+- ❌ NO summary files (`*_SUMMARY.md`, `IMPLEMENTATION_SUMMARY.md`)
+- ❌ NO validation files (`VALIDATION.md`, `VERIFICATION.md`)
+- ❌ NO reference files (`TOOLS_REFERENCE.md`, `API_REFERENCE.md`)
+- ✅ Update existing documentation (README, inline comments)
+- ✅ Use commit messages for summaries
+- ✅ Only create documentation when explicitly requested by user

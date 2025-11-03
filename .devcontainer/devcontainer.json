@@ -1,7 +1,7 @@
 {
-    "name": "Nucleus",
+    "name": "DevOps",
     "dockerComposeFile": "docker-compose.yml",
-    "service": "nucleus",
+    "service": "devops",
     "workspaceFolder": "/workspaces/Azure-DevOps",
     "remoteUser": "vscode",
 
@@ -9,15 +9,29 @@
     "customizations": {
         "vscode": {
             "extensions": [
+                // Azure Extensions
                 "ms-azuretools.vscode-azureresourcegroups",
                 "ms-azuretools.vscode-bicep",
                 "msazurermtools.azurerm-vscode-tools",
                 "ms-vscode.azure-account",
-                "ms-vscode.powershell",
                 "ms-vscode.azurecli",
+
+                // IaC Extensions
+                "hashicorp.terraform",
+                "redhat.ansible",
+
+                // Kubernetes Extensions
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+
+                // Language Extensions
+                "ms-vscode.powershell",
                 "redhat.vscode-yaml",
+
+                // DevOps Extensions
                 "github.vscode-github-actions",
                 "ms-azure-devops.azure-pipelines",
+
+                // Code Quality Extensions
                 "timonwong.shellcheck",
                 "DavidAnson.vscode-markdownlint"
             ],

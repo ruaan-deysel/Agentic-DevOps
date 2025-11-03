@@ -46,25 +46,141 @@ terraform plan -var-file="dev.tfvars" -out=tfplan
 terraform apply tfplan
 ```
 
-## Security Scanning
+## Pre-Commit Hooks (MANDATORY)
 
-### Bicep
+### Setup (Required Once Per Repository)
+```bash
+# Install pre-commit hooks
+pre-commit install
+
+# Run hooks manually on all files
+pre-commit run --all-files
+```
+
+### Usage
+Pre-commit hooks automatically run before each commit to enforce:
+- Code formatting (terraform fmt, bicep build)
+- Linting (yamllint, shellcheck)
+- Security scanning (gitleaks)
+- Validation checks
+
+**If hooks fail, commit is blocked until issues are fixed.**
+
+## YAML Validation (MANDATORY)
+
+```bash
+# Validate all YAML files
+yamllint .
+
+# Validate specific files
+yamllint azure-pipelines.yml
+yamllint .github/workflows/*.yml
+yamllint k8s/*.yaml
+
+# Fix common issues
+yamllint --format parsable . | grep -v "line too long"
+```
+
+**When to run:**
+- Before committing pipeline changes
+- Before deploying Kubernetes manifests
+- As part of pre-commit hooks
+
+## Shell Script Validation (MANDATORY)
+
+```bash
+# Validate shell scripts
+shellcheck scripts/*.sh
+shellcheck .devcontainer/scripts/*.sh
+
+# Validate with specific shell
+shellcheck --shell=bash script.sh
+
+# Ignore specific warnings
+shellcheck --exclude=SC2086 script.sh
+```
+
+**When to run:**
+- Before committing shell scripts
+- Before using scripts in pipelines
+- As part of pre-commit hooks
+
+## Kubernetes Manifest Validation (When Using AKS)
+
+```bash
+# Validate Kubernetes manifests
+kubectl apply --dry-run=client -f manifest.yaml
+kubectl apply --dry-run=server -f manifest.yaml
+kubectl diff -f manifest.yaml
+
+# Validate Helm charts
+helm lint charts/my-app
+helm template charts/my-app | kubectl apply --dry-run=client -f -
+
+# Security scan Kubernetes configs
+trivy config k8s/
+checkov -d k8s/
+```
+
+**When to run:**
+- Before deploying to AKS
+- Before committing Kubernetes manifests
+- As part of CI/CD pipeline
+
+## Security Scanning (MANDATORY)
+
+### Secret Detection
+```bash
+# Scan for secrets (MANDATORY before every commit)
+gitleaks detect --source . --verbose
+
+# Scan staged files only
+gitleaks protect --verbose --staged
+
+# Scan specific directory
+gitleaks detect --source ./bicep --verbose
+```
+
+### IaC Security Scanning
+
+**Bicep:**
 ```bash
 # ARM-TTK
 Test-AzTemplate -TemplatePath ./bicep
 
 # PSRule
 Assert-PSRule -Module PSRule.Rules.Azure -InputPath ./bicep
+
+# Trivy
+trivy config ./bicep
+
+# Checkov
+checkov -d ./bicep
 ```
 
-### Terraform
+**Terraform:**
 ```bash
-# tfsec
-tfsec .
+# Trivy (includes tfsec functionality)
+trivy config .
 
 # Checkov
 checkov -d .
 ```
+
+**Kubernetes:**
+```bash
+# Trivy
+trivy config k8s/
+
+# Checkov
+checkov -d k8s/
+```
+
+**When to run:**
+- Before EVERY commit (via pre-commit hooks)
+- Before creating pull requests
+- As part of CI/CD pipeline
+- During code reviews
 
 ## Systematic Task-Based Workflow (MANDATORY)
 
@@ -161,4 +277,3 @@ Code is "done" ONLY when:
 - Task-based workflow MANDATORY
 - All validation steps must be tasks
 - No deployments without testing task completion
-

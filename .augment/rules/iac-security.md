@@ -12,6 +12,8 @@ description: "Security Best Practices for Bicep and Terraform"
 - Enable encryption at rest and in transit
 - Use Managed Identities where possible
 - Scan code for security vulnerabilities
+- Use pre-commit hooks to prevent security issues
+- Scan for secrets before EVERY commit
 
 ## Secret Management
 
@@ -122,23 +124,123 @@ resource "azurerm_key_vault" "example" {
 
 ## Security Scanning
 
-### Bicep Tools
+### Secret Detection (MANDATORY Before Every Commit)
+
+**Gitleaks** - Scan for secrets and credentials:
+```bash
+# Scan entire repository for secrets
+gitleaks detect --source . --verbose
+
+# Scan only staged files (use in pre-commit hook)
+gitleaks protect --verbose --staged
+
+# Scan specific directory
+gitleaks detect --source ./bicep --verbose
+gitleaks detect --source ./terraform --verbose
+
+# Generate report
+gitleaks detect --source . --report-path gitleaks-report.json
+```
+
+**When to run:**
+- Before EVERY commit (automated via pre-commit hooks)
+- Before creating pull requests
+- As part of CI/CD pipeline
+- During code reviews
+- After cloning repository
+
+**Common secrets detected:**
+- Azure connection strings
+- Storage account keys
+- Service principal credentials
+- API keys and tokens
+- Database passwords
+- Private keys
+
+### Pre-Commit Hooks (MANDATORY)
+
+**Setup:**
+```bash
+# Install pre-commit framework
+pip install pre-commit
+
+# Install hooks in repository
+pre-commit install
+
+# Run manually on all files
+pre-commit run --all-files
+```
+
+**Example .pre-commit-config.yaml:**
+```yaml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.83.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+      - id: terraform_tflint
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+```
+
+**Benefits:**
+- Prevents committing secrets
+- Enforces code formatting
+- Validates syntax before commit
+- Catches common mistakes early
+- Reduces CI/CD failures
+
+### IaC Security Scanning Tools
+
+**Bicep:**
 ```bash
 # ARM-TTK
 Test-AzTemplate -TemplatePath ./bicep
 
 # PSRule
 Assert-PSRule -Module PSRule.Rules.Azure -InputPath ./bicep
+
+# Trivy (comprehensive scanning)
+trivy config ./bicep
+
+# Checkov
+checkov -d ./bicep
 ```
 
-### Terraform Tools
+**Terraform:**
 ```bash
-# tfsec
-tfsec .
+# Trivy (includes tfsec functionality)
+trivy config .
 
 # Checkov
 checkov -d .
 ```
+
+**Kubernetes:**
+```bash
+# Trivy
+trivy config k8s/
+
+# Checkov
+checkov -d k8s/
+```
+
+**When to run:**
+- After writing/modifying IaC code
+- Before committing changes
+- As part of CI/CD pipeline
+- During pull request reviews
 
 ## Systematic Task-Based Workflow (MANDATORY)
 
@@ -177,4 +279,3 @@ checkov -d .
 - Task-based workflow MANDATORY
 - Security scanning must be in task list
 - No deployments without security scan tasks completed
-

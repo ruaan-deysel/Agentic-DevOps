@@ -46,6 +46,396 @@ For new storage account deployment:
 
 ---
 
+## � Documentation Standards (MANDATORY)
+
+### ❌ DO NOT Create Unsolicited Documentation Files
+
+**NEVER create these types of files unless explicitly requested by the user:**
+
+#### Summary Files
+
+- `*_SUMMARY.md`
+- `IMPLEMENTATION_SUMMARY.md`
+- `CHANGES_SUMMARY.md`
+- `UPDATE_SUMMARY.md`
+- `DEPLOYMENT_SUMMARY.md`
+- `MIGRATION_SUMMARY.md`
+
+#### Validation/Verification Files
+
+- `VALIDATION.md`
+- `VERIFICATION.md`
+- `TESTING_RESULTS.md`
+- `CHECKLIST.md`
+- `VERIFICATION_STEPS.md`
+
+#### Reference Documentation Files
+
+- `REFERENCE.md`
+- `TOOLS_REFERENCE.md`
+- `API_REFERENCE.md`
+- `COMMANDS_REFERENCE.md`
+- `CONFIGURATION_REFERENCE.md`
+- `*_REFERENCE.md`
+
+#### Tool/Update Documentation Files
+
+- `TOOLS_REFERENCE_PART2.md`
+- `DEVCONTAINER_UPDATES.md`
+- `CHANGELOG_DETAILED.md`
+- `INSTALLATION_GUIDE.md`
+- `SETUP_INSTRUCTIONS.md`
+
+### ✅ What to Do Instead
+
+**Instead of creating new documentation files:**
+
+1. **Use Commit Messages:**
+
+   ```
+   feat: add Kubernetes deployment support
+
+   - Added kubectl and Helm to devcontainer
+   - Configured k9s for cluster management
+   - Updated testing workflow with kubectl validation
+
+   Closes #123
+   ```
+
+2. **Update Existing Documentation:**
+
+   - Add to existing README.md
+   - Update inline code comments
+   - Enhance existing documentation files
+
+3. **Link to Official Documentation:**
+
+   - Reference official tool documentation
+   - Use tool's built-in help (`--help`, man pages)
+   - Link to Azure documentation
+
+4. **Use PR Descriptions:**
+   - Summarize changes in pull request description
+   - Include testing results in PR comments
+   - Document decisions in PR discussion
+
+### Rationale
+
+**Why this rule exists:**
+
+- Prevents documentation sprawl and repository clutter
+- Avoids redundant information that becomes outdated
+- Keeps documentation focused and maintainable
+- Information is better placed in commit messages, PRs, or existing docs
+- Reduces maintenance burden
+
+### Exceptions
+
+**You MAY create documentation files when:**
+
+- User explicitly requests: "Create a TOOLS_REFERENCE.md file"
+- User asks for: "I need a summary document"
+- User requests: "Generate API reference documentation"
+
+**When in doubt, ASK:**
+
+- "Would you like me to create a separate documentation file, or update the existing README?"
+- "Should I add this to the README or create a new guide?"
+
+### Examples
+
+#### ❌ BAD: Creating Unsolicited Documentation
+
+```
+User: "Add Terraform support to the project"
+
+Copilot:
+1. Adds Terraform to Dockerfile
+2. Creates TERRAFORM_SETUP.md          ← WRONG
+3. Creates TOOLS_REFERENCE.md          ← WRONG
+4. Creates IMPLEMENTATION_SUMMARY.md   ← WRONG
+5. Creates VALIDATION_CHECKLIST.md     ← WRONG
+```
+
+#### ✅ GOOD: Minimal Documentation Approach
+
+```
+User: "Add Terraform support to the project"
+
+Copilot:
+1. Adds Terraform to Dockerfile
+2. Updates existing README with Terraform section
+3. Adds inline comments in Dockerfile
+4. Provides summary in commit message
+```
+
+---
+
+## �🛠️ DevOps Tools Usage Guidelines
+
+### When to Use Each Tool
+
+#### **Security Scanning (MANDATORY Before Commits)**
+
+```bash
+# Run ALL security scans before committing code
+gitleaks detect --source . --verbose          # Scan for secrets/credentials
+trivy config .                                 # Scan IaC for security issues
+checkov -d .                                   # Additional IaC security scan
+yamllint .                                     # Validate YAML syntax
+shellcheck scripts/*.sh                        # Validate shell scripts
+```
+
+**When to use:**
+
+- Before EVERY commit (use pre-commit hooks)
+- Before creating pull requests
+- As part of CI/CD pipeline validation
+- When reviewing code changes
+
+#### **Kubernetes/AKS Development**
+
+```bash
+# Validate Kubernetes manifests
+kubectl apply --dry-run=client -f manifest.yaml
+kubectl diff -f manifest.yaml
+
+# Helm chart development
+helm lint charts/my-app                       # Validate chart
+helm template charts/my-app                   # Preview rendered templates
+helm install --dry-run my-app charts/my-app   # Test installation
+
+# Interactive cluster management
+k9s                                            # Launch terminal UI
+kubectl get pods -n my-namespace               # List pods
+kubectl logs -f pod-name                       # Stream logs
+kubectl exec -it pod-name -- /bin/bash         # Shell into pod
+```
+
+**When to use:**
+
+- Deploying applications to AKS
+- Debugging AKS cluster issues
+- Managing Kubernetes resources
+- Validating Helm charts before deployment
+
+#### **GitHub Actions Local Testing**
+
+```bash
+# List available workflows
+act -l
+
+# Run workflow locally (dry run)
+act -n
+
+# Run specific workflow
+act push
+
+# Run specific job
+act -j build
+```
+
+**When to use:**
+
+- Testing GitHub Actions workflows before pushing
+- Debugging workflow failures locally
+- Iterating on CI/CD pipeline changes
+- Validating workflow syntax
+
+#### **YAML/JSON Processing**
+
+```bash
+# Parse and query YAML files
+yq eval '.spec.containers[0].image' deployment.yaml
+yq eval '.parameters.location.value' params.bicepparam
+
+# Parse and query JSON files
+jq '.resources[] | select(.type=="Microsoft.Storage/storageAccounts")' template.json
+az deployment group show -g rg-name -n deployment-name | jq '.properties.outputs'
+
+# Transform YAML to JSON
+yq eval -o=json deployment.yaml
+
+# Validate YAML syntax
+yamllint azure-pipelines.yml
+yamllint .github/workflows/*.yml
+```
+
+**When to use:**
+
+- Parsing Azure CLI JSON outputs
+- Querying Bicep/ARM template JSON
+- Manipulating pipeline YAML files
+- Extracting values from configuration files
+- Validating YAML syntax before deployment
+
+#### **Pre-commit Hooks (MANDATORY)**
+
+```bash
+# Install pre-commit hooks
+pre-commit install
+
+# Run hooks manually on all files
+pre-commit run --all-files
+
+# Run specific hook
+pre-commit run gitleaks --all-files
+pre-commit run terraform-fmt --all-files
+
+# Update hooks to latest versions
+pre-commit autoupdate
+```
+
+**When to use:**
+
+- Set up ONCE per repository clone
+- Automatically runs before every commit
+- Enforces code quality and security standards
+- Prevents committing secrets or malformed code
+
+#### **Git Large File Storage**
+
+```bash
+# Track large files
+git lfs track "*.tfstate"
+git lfs track "*.zip"
+git lfs track "*.tar.gz"
+
+# List tracked files
+git lfs ls-files
+
+# Pull LFS files
+git lfs pull
+```
+
+**When to use:**
+
+- Storing Terraform state backups
+- Versioning large binary assets
+- Managing documentation images/videos
+- Storing compiled artifacts
+
+### Tool Integration in Workflows
+
+#### **Pre-Deployment Validation Workflow**
+
+```bash
+# 1. Format code
+terraform fmt -recursive
+bicep build --file main.bicep
+
+# 2. Lint and validate
+yamllint .
+shellcheck scripts/*.sh
+terraform validate
+az bicep lint --file main.bicep
+
+# 3. Security scanning
+gitleaks detect --source . --verbose
+trivy config .
+checkov -d .
+
+# 4. Plan deployment
+terraform plan -out=tfplan
+az deployment group what-if --template-file main.bicep --parameters main.bicepparam
+
+# 5. Review and apply
+terraform apply tfplan
+az deployment group create --template-file main.bicep --parameters main.bicepparam
+```
+
+#### **AKS Deployment Workflow**
+
+```bash
+# 1. Validate manifests
+kubectl apply --dry-run=client -f k8s/
+helm lint charts/my-app
+
+# 2. Security scan
+trivy config k8s/
+checkov -d k8s/
+
+# 3. Deploy to cluster
+kubectl apply -f k8s/
+helm upgrade --install my-app charts/my-app
+
+# 4. Verify deployment
+kubectl get all -n my-namespace
+k9s  # Interactive verification
+```
+
+#### **GitHub Actions Development Workflow**
+
+```bash
+# 1. Validate workflow syntax
+yamllint .github/workflows/deploy.yml
+
+# 2. Test locally
+act -n  # Dry run
+act push  # Full run
+
+# 3. Commit and push
+git add .github/workflows/deploy.yml
+git commit -m "feat: add deployment workflow"
+git push
+```
+
+### Bash Aliases Reference
+
+The dev container includes helpful aliases:
+
+```bash
+# Kubernetes
+k='kubectl'
+kgp='kubectl get pods'
+kgs='kubectl get services'
+kgd='kubectl get deployments'
+kl='kubectl logs'
+kx='kubectl exec -it'
+
+# Helm
+h='helm'
+hls='helm list'
+hi='helm install'
+hu='helm upgrade'
+
+# Terraform
+tf='terraform'
+tfi='terraform init'
+tfp='terraform plan'
+tfa='terraform apply'
+tfv='terraform validate'
+tff='terraform fmt -recursive'
+
+# Security
+gitleaks-scan='gitleaks detect --source . --verbose'
+gitleaks-protect='gitleaks protect --verbose --staged'
+trivy-scan='trivy config .'
+checkov-scan='checkov -d .'
+
+# YAML/JSON
+yq-eval='yq eval'
+jq-pretty='jq .'
+```
+
+### Azure CLI Extensions
+
+The dev container includes monitoring extensions:
+
+```bash
+# Query Application Insights
+az monitor app-insights query \
+  --app <app-id> \
+  --analytics-query "requests | summarize count() by bin(timestamp, 1h)"
+
+# Query Log Analytics
+az monitor log-analytics query \
+  --workspace <workspace-id> \
+  --analytics-query "AzureDiagnostics | take 10"
+```
+
+---
+
 ## 🎯 Critical Rules (ALWAYS Follow)
 
 ### 1. ALWAYS Use Azure Verified Modules (AVM)
